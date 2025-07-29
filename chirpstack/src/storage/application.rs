@@ -109,6 +109,7 @@ impl FromStr for IntegrationKind {
             "AzureServiceBus" => IntegrationKind::AzureServiceBus,
             "PilotThings" => IntegrationKind::PilotThings,
             "Ifttt" => IntegrationKind::Ifttt,
+            "CustomApi" => IntegrationKind::CustomApi,
             _ => {
                 return Err(anyhow!("Unexpected IntegrationKind: {}", s));
             }
