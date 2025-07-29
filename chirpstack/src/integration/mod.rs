@@ -18,6 +18,7 @@ use lrwn::EUI64;
 mod amqp;
 mod aws_sns;
 mod azure_service_bus;
+mod custom_api;
 mod gcp_pub_sub;
 mod http;
 mod ifttt;
@@ -181,6 +182,9 @@ async fn for_application_id(id: Uuid) -> Result<Vec<Box<dyn Integration + Sync +
             }
             application::IntegrationConfiguration::Ifttt(conf) => {
                 Box::new(ifttt::Integration::new(conf))
+            }
+            application::IntegrationConfiguration::CustomApi(conf) => {
+                Box::new(custom_api::Integration::new(conf))
             }
             _ => {
                 continue;

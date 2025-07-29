@@ -241,6 +241,7 @@ impl ApplicationService for Application {
                     }
                     application::IntegrationKind::PilotThings => api::IntegrationKind::PilotThings,
                     application::IntegrationKind::Ifttt => api::IntegrationKind::Ifttt,
+                    application::IntegrationKind::CustomApi => api::IntegrationKind::CustomApi,
                 }
                 .into(),
             })
@@ -1864,6 +1865,130 @@ impl ApplicationService for Application {
             .insert("x-log-application_id", req.application_id.parse().unwrap());
 
         Ok(resp)
+    }
+
+    async fn create_custom_api_integration(
+        &self,
+        request: Request<api::CreateCustomApiIntegrationRequest>,
+    ) -> Result<Response<()>, Status> {
+        let integration = request
+            .get_ref()
+            .integration
+            .as_ref()
+            .ok_or_else(|| Status::invalid_argument("integration must be set"))?;
+        let app_id = Uuid::from_str(&integration.application_id).map_err(|e| e.status())?;
+
+        self.validator
+            .validate(
+                request.extensions(),
+                validator::ValidateApplicationAccess::new(validator::Flag::Update, app_id),
+            )
+            .await?;
+
+        let i = application::Integration {
+            application_id: app_id.into(),
+            kind: application::IntegrationKind::CustomApi,
+            configuration: application::IntegrationConfiguration::CustomApi(
+                application::CustomApiConfiguration {
+                    endpoint_url: integration.endpoint_url.clone(),
+                },
+            ),
+            ..Default::default()
+        };
+
+        application::create_integration(i)
+            .await
+            .map_err(|ve| ve.status())?;
+
+        Ok(Response::new(()))
+    }
+
+    async fn get_custom_api_integration(
+        &self,
+        request: Request<api::GetCustomApiIntegrationRequest>,
+    ) -> Result<Response<api::GetCustomApiIntegrationResponse>, Status> {
+        let req = request.get_ref();
+        let app_id = Uuid::from_str(&req.application_id).map_err(|e| e.status())?;
+
+        self.validator
+            .validate(
+                request.extensions(),
+                validator::ValidateApplicationAccess::new(validator::Flag::Update, app_id),
+            )
+            .await?;
+
+        let i = application::get_integration(&app_id, application::IntegrationKind::CustomApi)
+            .await
+            .map_err(|ae| ae.status())?;
+
+        if let application::IntegrationConfiguration::CustomApi(conf) = i.configuration {
+            let resp = api::GetCustomApiIntegrationResponse {
+                integration: Some(api::CustomApiIntegration {
+                    application_id: i.application_id.to_string(),
+                    endpoint_url: conf.endpoint_url,
+                }),
+            };
+            Ok(Response::new(resp))
+        } else {
+            Err(Status::internal("Unexpected integration configuration"))
+        }
+    }
+
+    async fn update_custom_api_integration(
+        &self,
+        request: Request<api::UpdateCustomApiIntegrationRequest>,
+    ) -> Result<Response<()>, Status> {
+        let integration = request
+            .get_ref()
+            .integration
+            .as_ref()
+            .ok_or_else(|| Status::invalid_argument("integration must be set"))?;
+        let app_id = Uuid::from_str(&integration.application_id).map_err(|e| e.status())?;
+
+        self.validator
+            .validate(
+                request.extensions(),
+                validator::ValidateApplicationAccess::new(validator::Flag::Update, app_id),
+            )
+            .await?;
+
+        let i = application::Integration {
+            application_id: app_id.into(),
+            kind: application::IntegrationKind::CustomApi,
+            configuration: application::IntegrationConfiguration::CustomApi(
+                application::CustomApiConfiguration {
+                    endpoint_url: integration.endpoint_url.clone(),
+                },
+            ),
+            ..Default::default()
+        };
+
+        application::update_integration(i)
+            .await
+            .map_err(|ve| ve.status())?;
+
+        Ok(Response::new(()))
+    }
+
+    async fn delete_custom_api_integration(
+        &self,
+        request: Request<api::DeleteCustomApiIntegrationRequest>,
+    ) -> Result<Response<()>, Status> {
+        let req = request.get_ref();
+        let app_id = Uuid::from_str(&req.application_id).map_err(|e| e.status())?;
+
+        self.validator
+            .validate(
+                request.extensions(),
+                validator::ValidateApplicationAccess::new(validator::Flag::Update, app_id),
+            )
+            .await?;
+
+        application::delete_integration(&app_id, application::IntegrationKind::CustomApi)
+            .await
+            .map_err(|ve| ve.status())?;
+
+        Ok(Response::new(()))
     }
 
     async fn generate_mqtt_integration_client_certificate(

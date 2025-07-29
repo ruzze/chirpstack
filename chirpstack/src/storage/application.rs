@@ -85,6 +85,7 @@ pub enum IntegrationKind {
     AzureServiceBus,
     PilotThings,
     Ifttt,
+    CustomApi,
 }
 
 impl fmt::Display for IntegrationKind {
@@ -158,6 +159,7 @@ pub enum IntegrationConfiguration {
     AzureServiceBus(AzureServiceBusConfiguration),
     PilotThings(PilotThingsConfiguration),
     Ifttt(IftttConfiguration),
+    CustomApi(CustomApiConfiguration),
 }
 
 #[cfg(feature = "postgres")]
@@ -288,6 +290,11 @@ pub struct IftttConfiguration {
     pub uplink_values: [String; 2], // The first value is reserved for the DevEUI
     pub arbitrary_json: bool,
     pub event_prefix: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CustomApiConfiguration {
+    pub endpoint_url: String,
 }
 
 #[derive(Clone, Queryable, Insertable, PartialEq, Eq, Debug)]

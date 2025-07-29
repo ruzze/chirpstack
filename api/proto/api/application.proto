@@ -419,6 +419,40 @@ service ApplicationService {
     };
   }
 
+  // Create Custom API integration.
+  rpc CreateCustomApiIntegration(CreateCustomApiIntegrationRequest)
+      returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post : "/api/applications/{integration.application_id}/integrations/custom-api",
+      body : "*"
+    };
+  }
+
+  // Get Custom API integration.
+  rpc GetCustomApiIntegration(GetCustomApiIntegrationRequest)
+      returns (GetCustomApiIntegrationResponse) {
+    option (google.api.http) = {
+      get : "/api/applications/{application_id}/integrations/custom-api"
+    };
+  }
+
+  // Update Custom API integration.
+  rpc UpdateCustomApiIntegration(UpdateCustomApiIntegrationRequest)
+      returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put : "/api/applications/{integration.application_id}/integrations/custom-api",
+      body : "*"
+    };
+  }
+
+  // Delete Custom API integration.
+  rpc DeleteCustomApiIntegration(DeleteCustomApiIntegrationRequest)
+      returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete : "/api/applications/{application_id}/integrations/custom-api"
+    };
+  }
+
   // Generates application ID specific client-certificate.
   rpc GenerateMqttIntegrationClientCertificate(
       GenerateMqttIntegrationClientCertificateRequest)
@@ -460,6 +494,7 @@ enum IntegrationKind {
   PILOT_THINGS = 8;
   MQTT_GLOBAL = 9;
   IFTTT = 10;
+  CUSTOM_API = 11;
 }
 
 message Application {
@@ -1091,6 +1126,40 @@ message UpdateIftttIntegrationRequest {
 }
 
 message DeleteIftttIntegrationRequest {
+  // Application ID (UUID).
+  string application_id = 1;
+}
+
+// CustomApi integration configuration.
+message CustomApiIntegration {
+  // Application ID (UUID).
+  string application_id = 1;
+
+  // Endpoint URL.
+  string endpoint_url = 2;
+}
+
+message CreateCustomApiIntegrationRequest {
+  // Integration object to create.
+  CustomApiIntegration integration = 1;
+}
+
+message GetCustomApiIntegrationRequest {
+  // Application ID (UUID).
+  string application_id = 1;
+}
+
+message GetCustomApiIntegrationResponse {
+  // Integration object.
+  CustomApiIntegration integration = 1;
+}
+
+message UpdateCustomApiIntegrationRequest {
+  // Integration object to update.
+  CustomApiIntegration integration = 1;
+}
+
+message DeleteCustomApiIntegrationRequest {
   // Application ID (UUID).
   string application_id = 1;
 }
