@@ -35,6 +35,139 @@ import InternalStore from "../../stores/InternalStore";
 import DeviceProfileStore from "../../stores/DeviceProfileStore";
 import DeviceProfileTemplateStore from "../../stores/DeviceProfileTemplateStore";
 import CodeEditor from "../../components/CodeEditor";
+import WmiCodecCreator, { WmiField } from "../../components/WmiCodecCreator";
+import PacketVisualizer from "../../components/PacketVisualizer";
+import CCodeGenerator from "../../components/CCodeGenerator";
+
+const generateWmiScript = (fields: WmiField[]): string => {
+  // La maggior parte dei microcontrollori (es. ARM) sono Little Endian.
+  // Impostare su 'false' se il dispositivo utilizza Big Endian.
+  const littleEndian = true;
+
+  if (!fields || fields.filter(f => !!f).length === 0) {
+    // Restituisce uno script di base se non ci sono campi
+    return `function decodeUplink(input) {
+  return {
+    data: {}
+  };
+}
+
+function encodeDownlink(input) {
+  return {
+    bytes: []
+  };
+}`;
+  }
+
+  const helpers = `
+// Helper function to convert bytes to a 32-bit float.
+function bytesToFloat(bytes, littleEndian) {
+  var buffer = new ArrayBuffer(4);
+  var view = new DataView(buffer);
+  bytes.forEach(function (b, i) {
+    view.setUint8(i, b);
+  });
+  return view.getFloat32(0, littleEndian);
+}
+
+// Helper function to convert bytes to a signed integer.
+function bytesToInt(bytes, littleEndian) {
+  var buffer = new ArrayBuffer(bytes.length);
+  var view = new DataView(buffer);
+  bytes.forEach(function (b, i) {
+    view.setUint8(i, b);
+  });
+  switch (bytes.length) {
+    case 1:
+      return view.getInt8(0);
+    case 2:
+      return view.getInt16(0, littleEndian);
+    case 4:
+      return view.getInt32(0, littleEndian);
+    default:
+      // Return 0 for unsupported byte lengths
+      return 0;
+  }
+}
+`;
+
+  let offset = 0;
+  const decodeBody = fields
+    .filter(f => !!f)
+    .map(f => {
+      let line = "";
+      const currentOffset = offset;
+      offset += f.bytes;
+
+      switch (f.type) {
+        case "float":
+          if (f.bytes !== 4) {
+            line = `      // ERROR: Cannot decode float for '${f.name}'. It must be 4 bytes.`;
+          } else {
+            line = `      data.${f.name} = bytesToFloat(input.bytes.slice(${currentOffset}, ${offset}), ${littleEndian});`;
+          }
+          break;
+        case "integer":
+          if (![1, 2, 4].includes(f.bytes)) {
+            line = `      // ERROR: Cannot decode integer for '${f.name}'. Supported byte lengths are 1, 2, or 4.`;
+          } else {
+            line = `      data.${f.name} = bytesToInt(input.bytes.slice(${currentOffset}, ${offset}), ${littleEndian});`;
+          }
+          break;
+        case "boolean":
+          if (f.bytes !== 1) {
+            line = `      // ERROR: Cannot decode boolean for '${f.name}'. It must be 1 byte.`;
+          } else {
+            line = `      data.${f.name} = input.bytes[${currentOffset}] !== 0;`;
+          }
+          break;
+        default:
+          line = `      // ERROR: Unknown type '${f.type}' for field '${f.name}'.`;
+      }
+      return line;
+    })
+    .join("\n");
+
+  const encodeBody = fields
+    .filter(f => !!f)
+    .map(f => `  // TODO: Implement encoder for ${f.name}`)
+    .join("\n");
+
+  return `/**
+ * Decode uplink function.
+ *
+ * @param {object} input - An object containing the uplink payload.
+ * @param {number[]} input.bytes - The uplink payload as an array of bytes.
+ * @param {number} input.fPort - The uplink fPort.
+ * @returns {object} The decoded uplink payload.
+ */
+function decodeUplink(input) {
+  var data = {};
+  
+${decodeBody}
+
+  return {
+    data: data
+  };
+}
+${helpers}
+/**
+ * Encode downlink function.
+ *
+ * @param {object} input - An object containing the downlink payload.
+ * @param {object} input.data - The downlink payload to encode.
+ * @returns {object} The encoded downlink payload.
+ */
+function encodeDownlink(input) {
+  var bytes = [];
+
+${encodeBody}
+
+  return {
+    bytes: bytes
+  };
+}`;
+};
 
 interface ModalProps {
   onOk: (dp: DeviceProfileTemplate) => void;
@@ -181,6 +314,8 @@ interface IProps {
 
 function DeviceProfileForm(props: IProps) {
   const [form] = Form.useForm();
+  const wmiFields = Form.useWatch("wmiFields", form);
+  //const payloadCodecRuntime = Form.useWatch("payloadCodecRuntime", form);
 
   const [supportsOtaa, setSupportsOtaa] = useState<boolean>(false);
   const [supportsClassB, setSupportsClassB] = useState<boolean>(false);
@@ -193,6 +328,13 @@ function DeviceProfileForm(props: IProps) {
   const [regionConfigurationsFiltered, setRegionConfigurationsFiltered] = useState<[string, string][]>([]);
   const [templateModalVisible, setTemplateModalVisible] = useState<boolean>(false);
   const [tabActive, setTabActive] = useState<string>("1");
+
+  useEffect(() => {
+    if (payloadCodecRuntime === CodecRuntime.WMI && wmiFields !== undefined) {
+      const script = generateWmiScript(wmiFields);
+      form.setFieldsValue({ payloadCodecScript: script });
+    }
+  }, [wmiFields, payloadCodecRuntime, form]);
 
   useEffect(() => {
     const v = props.initialValues;
@@ -341,6 +483,7 @@ function DeviceProfileForm(props: IProps) {
   };
 
   const onPayloadCodecRuntimeChange = (value: CodecRuntime) => {
+    console.log("onPayloadCodecRuntimeChange", value);
     setPayloadCodecRuntime(value);
   };
 
@@ -748,10 +891,27 @@ function DeviceProfileForm(props: IProps) {
               <Select.Option value={CodecRuntime.NONE}>None</Select.Option>
               <Select.Option value={CodecRuntime.CAYENNE_LPP}>Cayenne LPP</Select.Option>
               <Select.Option value={CodecRuntime.JS}>JavaScript functions</Select.Option>
+              <Select.Option value={CodecRuntime.WMI}>Wildlife Payload</Select.Option>
             </Select>
           </Form.Item>
           {payloadCodecRuntime === CodecRuntime.JS && (
             <CodeEditor label="Codec functions" name="payloadCodecScript" disabled={props.disabled} />
+          )}
+          {payloadCodecRuntime === CodecRuntime.WMI && (
+            <Card title="Codec Field Definitions">
+              <Form.Item name="wmiFields">
+                <WmiCodecCreator />
+              </Form.Item>
+              <PacketVisualizer fields={wmiFields} />
+              <CCodeGenerator fields={wmiFields} />
+              <Form.Item
+                label="Codec functions (auto-generated)"
+                name="payloadCodecScript"
+                tooltip="This script is auto-generated. The decoding/encoding logic must be implemented."
+              >
+                <CodeEditor disabled name="payloadCodecScript" />
+              </Form.Item>
+            </Card>
           )}
         </Tabs.TabPane>
         <Tabs.TabPane tab="Relay" key="6" forceRender>

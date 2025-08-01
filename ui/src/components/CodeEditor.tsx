@@ -1,50 +1,42 @@
-import { useState, useEffect } from "react";
-
-import { Form } from "antd";
 import AceEditor from "react-ace";
-
 import "ace-builds/src-noconflict/mode-javascript";
-import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/ext-language_tools";
 
 interface IProps {
   label?: string;
-  name: string;
-  required?: boolean;
+  name?: string;
+  value?: string;
+  onChange?: (value: string) => void;
   disabled?: boolean;
-  tooltip?: string;
-  mode?: string;
+  language?: string;
 }
 
 function CodeEditor(props: IProps) {
-  const form = Form.useFormInstance();
-  const [value, setValue] = useState<string>("");
-
-  useEffect(() => {
-    setValue(form.getFieldValue(props.name) || "");
-  }, [form, props]);
-
-  const onChange = (newValue: string) => {
-    setValue(newValue);
-    form.setFieldsValue({
-      [props.name]: newValue,
-    });
+  const onChange = (value: string) => {
+    if (props.onChange) {
+      props.onChange(value);
+    }
   };
 
   return (
-    <Form.Item label={props.label} name={props.name} tooltip={props.tooltip}>
-      <div style={{ border: "1px solid #cccccc" }}>
-        <AceEditor
-          mode={props.mode || "javascript"}
-          theme="github"
-          onChange={onChange}
-          value={value}
-          width="100%"
-          height="600px"
-          editorProps={{ $blockScrolling: true }}
-        />
-      </div>
-    </Form.Item>
+    <AceEditor
+      mode={props.language || "javascript"}
+      theme="github"
+      width="100%"
+      height="400px"
+      onChange={onChange}
+      value={props.value}
+      readOnly={props.disabled}
+      setOptions={{
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true,
+        enableSnippets: true,
+        showLineNumbers: true,
+        tabSize: 2,
+      }}
+    />
   );
 }
 

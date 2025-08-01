@@ -24,6 +24,9 @@ enum CodecRuntime {
 
   // JavaScript.
   JS = 2;
+
+  // WMI
+  WMI = 3;
 }
 
 enum MeasurementKind {
