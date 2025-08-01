@@ -24,6 +24,7 @@ pub enum Codec {
     NONE,
     CAYENNE_LPP,
     JS,
+    WMI
 }
 
 impl fmt::Display for Codec {
@@ -69,6 +70,7 @@ impl FromStr for Codec {
             "" | "NONE" => Codec::NONE,
             "CAYENNE_LPP" => Codec::CAYENNE_LPP,
             "JS" => Codec::JS,
+            "WMI" => Codec::WMI,
             _ => {
                 return Err(anyhow!("Unexpected codec: {}", s));
             }
@@ -88,6 +90,7 @@ pub async fn binary_to_struct(
         Codec::NONE => None,
         Codec::CAYENNE_LPP => Some(cayenne_lpp::decode(b).context("CayenneLpp decode")?),
         Codec::JS => Some(js::decode(recv_time, f_port, variables, decoder_config, b).await?),
+        Codec::WMI => Some(js::decode(recv_time, f_port, variables, decoder_config, b).await?),
     })
 }
 
@@ -102,6 +105,7 @@ pub async fn struct_to_binary(
         Codec::NONE => Vec::new(),
         Codec::CAYENNE_LPP => cayenne_lpp::encode(obj).context("CayenneLpp encode")?,
         Codec::JS => js::encode(f_port, variables, encoder_config, obj).await?,
+        Codec::WMI => js::encode(f_port, variables, encoder_config, obj).await?,
     })
 }
 
