@@ -150,6 +150,16 @@ impl DeviceProfileService for DeviceProfile {
                     ..Default::default()
                 }
             },
+            wmi_codec_fields: req_dp
+                .wmi_codec_fields
+                .iter()
+                .map(|f| fields::WmiCodecField {
+                    name: f.name.clone(),
+                    type_name: f.r#type.clone(),
+                    bytes: f.bytes,
+                })
+                .collect::<Vec<_>>()
+                .into(),
             ..Default::default()
         };
 
@@ -270,6 +280,16 @@ impl DeviceProfileService for DeviceProfile {
                     ts005_version: dp.app_layer_params.ts005_version.to_proto().into(),
                     ts005_f_port: dp.app_layer_params.ts005_f_port as u32,
                 }),
+                wmi_codec_fields: dp
+                    .wmi_codec_fields
+                    .0 // Accedi al Vec interno con .0
+                    .into_iter()
+                    .map(|f| api::WmiCodecField {
+                        name: f.name,
+                        r#type: f.type_name,
+                        bytes: f.bytes,
+                    })
+                    .collect(),
             }),
             created_at: Some(helpers::datetime_to_prost_timestamp(&dp.created_at)),
             updated_at: Some(helpers::datetime_to_prost_timestamp(&dp.updated_at)),
@@ -408,6 +428,16 @@ impl DeviceProfileService for DeviceProfile {
                     ts005_f_port: app_layer_params.ts005_f_port as u8,
                 }
             },
+            wmi_codec_fields: req_dp
+                .wmi_codec_fields
+                .iter()
+                .map(|f| fields::WmiCodecField {
+                    name: f.name.clone(),
+                    type_name: f.r#type.clone(),
+                    bytes: f.bytes,
+                })
+                .collect::<Vec<_>>()
+                .into(),
             ..Default::default()
         })
         .await

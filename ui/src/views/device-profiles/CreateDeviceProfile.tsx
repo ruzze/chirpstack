@@ -86,6 +86,7 @@ function encodeDownlink(input) {
   appLayer.setTs004FPort(201);
   appLayer.setTs005FPort(200);
   deviceProfile.setAppLayerParams(appLayer);
+  deviceProfile.setWmiCodecFieldsList([]);
 
   return (
     <Space direction="vertical" style={{ width: "100%" }} size="large">

@@ -120,6 +120,7 @@ diesel::table! {
         class_c_params -> Nullable<Jsonb>,
         relay_params -> Nullable<Jsonb>,
         app_layer_params -> Jsonb,
+        wmi_codec_fields -> Jsonb,
     }
 }
 

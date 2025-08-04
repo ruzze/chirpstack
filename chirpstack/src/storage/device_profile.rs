@@ -4,6 +4,7 @@ use anyhow::Result;
 use chrono::{DateTime, Utc};
 use diesel::{dsl, prelude::*};
 use diesel_async::RunQueryDsl;
+use diesel::pg::sql_types::Jsonb;
 use tracing::info;
 use uuid::Uuid;
 
@@ -15,9 +16,11 @@ use super::{error, fields, get_async_db_conn};
 use crate::api::helpers::ToProto;
 use crate::codec::Codec;
 use chirpstack_api::internal;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Queryable, Insertable, Debug, PartialEq, Eq)]
+#[derive(Clone, Queryable, QueryableByName, Insertable, AsChangeset, Debug, PartialEq)]
 #[diesel(table_name = device_profile)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct DeviceProfile {
     pub id: fields::Uuid,
     pub tenant_id: fields::Uuid,
@@ -47,7 +50,8 @@ pub struct DeviceProfile {
     pub class_b_params: Option<fields::ClassBParams>,
     pub class_c_params: Option<fields::ClassCParams>,
     pub relay_params: Option<fields::RelayParams>,
-    pub app_layer_params: fields::AppLayerParams,
+    pub app_layer_params: fields::AppLayerParams,    
+    pub wmi_codec_fields: fields::WmiCodecFields,
 }
 
 impl DeviceProfile {
@@ -98,6 +102,7 @@ impl Default for DeviceProfile {
             class_c_params: None,
             relay_params: None,
             app_layer_params: fields::AppLayerParams::default(),
+            wmi_codec_fields: fields::WmiCodecFields::default(),
         }
     }
 }
@@ -211,6 +216,7 @@ pub async fn update(dp: DeviceProfile) -> Result<DeviceProfile, Error> {
             device_profile::class_c_params.eq(&dp.class_c_params),
             device_profile::relay_params.eq(&dp.relay_params),
             device_profile::app_layer_params.eq(&dp.app_layer_params),
+            device_profile::wmi_codec_fields.eq(&dp.wmi_codec_fields),
         ))
         .get_result(&mut get_async_db_conn().await?)
         .await

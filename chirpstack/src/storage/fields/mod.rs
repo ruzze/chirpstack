@@ -8,6 +8,7 @@ mod key_value;
 mod measurements;
 mod multicast_group_scheduling_type;
 mod uuid;
+mod wmi_codec_field;
 
 pub use big_decimal::BigDecimal;
 pub use dev_nonces::DevNonces;
@@ -18,6 +19,7 @@ pub use key_value::KeyValue;
 pub use measurements::*;
 pub use multicast_group_scheduling_type::MulticastGroupSchedulingType;
 pub use uuid::Uuid;
+pub use wmi_codec_field::{WmiCodecField, WmiCodecFields};
 
 #[cfg(feature = "postgres")]
 pub mod sql_types {

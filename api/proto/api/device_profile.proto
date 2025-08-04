@@ -183,6 +183,16 @@ service DeviceProfileService {
   }
 }
 
+// Defines a WMI (Wildlife Monitoring Initiative) codec field.
+message WmiCodecField {
+  // Field name.
+  string name = 1;
+  // Field type.
+  string type = 2;
+  // Number of bytes.
+  uint32 bytes = 3;
+}
+
 message DeviceProfile {
   // Device-profile ID (UUID).
   // Note: on create this will be automatically generated.
@@ -464,6 +474,11 @@ message DeviceProfile {
 
   // Application Layer parameters.
   AppLayerParams app_layer_params = 54;
+
+  // WMI Codec fields.
+  // This is used to automatically generate the codec scripts and device-side
+  // C-code.
+  repeated WmiCodecField wmi_codec_fields = 55;
 }
 
 message Measurement {

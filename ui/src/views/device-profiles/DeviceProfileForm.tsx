@@ -15,6 +15,7 @@ import {
   Ts003Version,
   Ts004Version,
   Ts005Version,
+  WmiCodecField,
 } from "@chirpstack/chirpstack-api-grpc-web/api/device_profile_pb";
 import { Region, MacVersion, RegParamsRevision } from "@chirpstack/chirpstack-api-grpc-web/common/common_pb";
 import type { ListRegionsResponse, RegionListItem } from "@chirpstack/chirpstack-api-grpc-web/api/internal_pb";
@@ -338,6 +339,18 @@ function DeviceProfileForm(props: IProps) {
 
   useEffect(() => {
     const v = props.initialValues;
+
+    // Convert WmiCodecField[] from protobuf to a plain JS object for the form
+    const wmiCodecFields = v.getWmiCodecFieldsList().map(f => ({
+      name: f.getName(),
+      type: f.getType(),
+      bytes: f.getBytes(),
+    }));
+
+    form.setFieldsValue({
+      wmiFields: wmiCodecFields,
+    });
+
     setSupportsOtaa(v.getSupportsOtaa());
     setSupportsClassB(v.getSupportsClassB());
     setSupportsClassC(v.getSupportsClassC());
@@ -412,6 +425,21 @@ function DeviceProfileForm(props: IProps) {
     // codec
     dp.setPayloadCodecRuntime(v.payloadCodecRuntime);
     dp.setPayloadCodecScript(v.payloadCodecScript);
+
+    // Convert plain JS objects from form back to WmiCodecField[] for protobuf
+    if (v.payloadCodecRuntime === CodecRuntime.WMI && v.wmiFields) {
+      const wmiCodecFields = v.wmiFields
+        .filter(f => f) // Filter out any null/undefined entries from the form list
+        .map(f => {
+          const field = new WmiCodecField();
+          field.setName(f.name);
+          field.setType(f.type);
+          field.setBytes(f.bytes);
+          return field;
+        });
+
+      dp.setWmiCodecFieldsList(wmiCodecFields);
+    }
 
     // relay
     dp.setIsRelay(v.isRelay);
