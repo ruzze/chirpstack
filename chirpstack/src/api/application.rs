@@ -1919,7 +1919,7 @@ impl ApplicationService for Application {
             )
             .await?;
 
-            let i = application::get_integration(&app_id, application::IntegrationKind::CustomApi)
+        let i = application::get_integration(&app_id, application::IntegrationKind::CustomApi)
             .await
             .map_err(|e| e.status())?;
 
@@ -2097,6 +2097,9 @@ impl ApplicationService for Application {
 
 #[cfg(test)]
 pub mod test {
+    use std::collections::HashMap;
+    use std::env;
+
     use super::*;
     use crate::api::auth::validator::RequestValidator;
     use crate::api::auth::AuthID;
@@ -3691,5 +3694,117 @@ pub mod test {
             },
             list_resp
         );
+    }
+
+    #[tokio::test]
+    async fn test_custom_api_integration() {
+        // 1. Arrange: Setup dell'ambiente
+        let mongodb_uri = match env::var("TEST_MONGODB_URI") {
+            Ok(v) => v,
+            Err(_) => {
+                println!(
+                    "Skipping Custom API (MongoDB) integration test, TEST_MONGODB_URI is not set"
+                );
+                return;
+            }
+        };
+
+        let _guard = test::prepare().await;
+
+        // setup admin user
+        let u = user::User {
+            is_admin: true,
+            is_active: true,
+            email: "admin@admin".into(),
+            email_verified: true,
+            ..Default::default()
+        };
+        let u = user::create(u).await.unwrap();
+
+        // create tenant
+        let t = tenant::create(tenant::Tenant {
+            name: "test-tenant".into(),
+            can_have_gateways: true,
+            max_gateway_count: 10,
+            ..Default::default()
+        })
+        .await
+        .unwrap();
+
+        // create application
+        let app_service = Application::new(RequestValidator::new());
+        let create_req = get_request(
+            &u.id,
+            api::CreateApplicationRequest {
+                application: Some(api::Application {
+                    tenant_id: t.id.to_string(),
+                    name: "test-app".into(),
+                    description: "test application".into(),
+                    ..Default::default()
+                }),
+            },
+        );
+        let create_resp = app_service.create(create_req).await.unwrap();
+        let app_id = create_resp.get_ref().id.clone();
+
+        // Nomi unici per DB e collezione per isolare il test
+        let uuid_short = Uuid::new_v4().to_string().replace("-", "")[0..16].to_string();
+        let db_name = format!("test-{}", uuid_short);
+        let coll_name = format!("coll-{}", uuid_short);
+
+        // 1. Arrange: Creazione dell'integrazione
+        let req = get_request(
+            &u.id,
+            api::CreateCustomApiIntegrationRequest {
+                integration: Some(api::CustomApiIntegration {
+                    application_id: app_id.clone(),
+                    mongodb_uri: mongodb_uri.clone(),
+                    mongodb_database: db_name.clone(),
+                    mongodb_collection: coll_name.clone(),
+                }),
+            },
+        );
+        app_service
+            .create_custom_api_integration(req)
+            .await
+            .unwrap();
+
+        // 2. Act: Inviare un evento di uplink
+        let dev_eui = "0102030405060708";
+        let uplink_event = chirpstack_api::integration::UplinkEvent {
+            device_info: Some(chirpstack_api::integration::DeviceInfo {
+                application_id: app_id.clone(),
+                dev_eui: dev_eui.to_string(),
+                ..Default::default()
+            }),
+            data: vec![1, 2, 3],
+            ..Default::default()
+        };
+        crate::integration::uplink_event(
+            Uuid::from_str(&app_id).unwrap(),
+            &HashMap::new(),
+            &uplink_event,
+        )
+        .await;
+        // Dare un piccolo lasso di tempo all'integrazione per scrivere nel DB
+        tokio::time::sleep(std::time::Duration::from_millis(200)).await;
+
+        // 3. Assert: Verificare che i dati siano stati scritti
+        let client = mongodb::Client::with_uri_str(&mongodb_uri).await.unwrap();
+        let db = client.database(&db_name);
+        let coll = db.collection::<mongodb::bson::Document>(&coll_name);
+
+        let doc = coll.find_one(mongodb::bson::doc! {}).await.unwrap();
+        assert!(doc.is_some(), "Document was not inserted into MongoDB");
+
+        let doc = doc.unwrap();
+        let device_info = doc.get("deviceInfo").unwrap().as_document().unwrap();
+        assert_eq!(
+            dev_eui,
+            device_info.get("devEui").unwrap().as_str().unwrap()
+        );
+
+        // 4. Cleanup: Pulire il database di test
+        db.drop().await.unwrap();
     }
 }
