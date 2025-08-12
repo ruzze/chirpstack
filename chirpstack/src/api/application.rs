@@ -1890,7 +1890,9 @@ impl ApplicationService for Application {
             kind: application::IntegrationKind::CustomApi,
             configuration: application::IntegrationConfiguration::CustomApi(
                 application::CustomApiConfiguration {
-                    endpoint_url: integration.endpoint_url.clone(),
+                    mongodb_uri: integration.mongodb_uri.clone(),
+                    mongodb_database: integration.mongodb_database.clone(),
+                    mongodb_collection: integration.mongodb_collection.clone(),
                 },
             ),
             ..Default::default()
@@ -1917,15 +1919,17 @@ impl ApplicationService for Application {
             )
             .await?;
 
-        let i = application::get_integration(&app_id, application::IntegrationKind::CustomApi)
+            let i = application::get_integration(&app_id, application::IntegrationKind::CustomApi)
             .await
-            .map_err(|ae| ae.status())?;
+            .map_err(|e| e.status())?;
 
         if let application::IntegrationConfiguration::CustomApi(conf) = i.configuration {
             let resp = api::GetCustomApiIntegrationResponse {
                 integration: Some(api::CustomApiIntegration {
                     application_id: i.application_id.to_string(),
-                    endpoint_url: conf.endpoint_url,
+                    mongodb_uri: conf.mongodb_uri,
+                    mongodb_database: conf.mongodb_database,
+                    mongodb_collection: conf.mongodb_collection,
                 }),
             };
             Ok(Response::new(resp))
@@ -1957,7 +1961,9 @@ impl ApplicationService for Application {
             kind: application::IntegrationKind::CustomApi,
             configuration: application::IntegrationConfiguration::CustomApi(
                 application::CustomApiConfiguration {
-                    endpoint_url: integration.endpoint_url.clone(),
+                    mongodb_uri: integration.mongodb_uri.clone(),
+                    mongodb_database: integration.mongodb_database.clone(),
+                    mongodb_collection: integration.mongodb_collection.clone(),
                 },
             ),
             ..Default::default()

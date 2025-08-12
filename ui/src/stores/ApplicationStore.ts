@@ -62,6 +62,11 @@ import type {
   GetIftttIntegrationResponse,
   UpdateIftttIntegrationRequest,
   DeleteIftttIntegrationRequest,
+  CreateCustomApiIntegrationRequest,
+  GetCustomApiIntegrationRequest,
+  GetCustomApiIntegrationResponse,
+  UpdateCustomApiIntegrationRequest,
+  DeleteCustomApiIntegrationRequest,
   GenerateMqttIntegrationClientCertificateRequest,
   GenerateMqttIntegrationClientCertificateResponse,
   ListApplicationDeviceProfilesRequest,
@@ -783,6 +788,69 @@ class ApplicationStore extends EventEmitter {
 
       notification.success({
         message: "IFTTT integration deleted",
+        duration: 3,
+      });
+
+      this.emit("integration.delete");
+      callbackFunc();
+    });
+  };
+
+  createCustomApiIntegration = (req: CreateCustomApiIntegrationRequest, callbackFunc: () => void) => {
+    this.client.createCustomApiIntegration(req, SessionStore.getMetadata(), err => {
+      if (err !== null) {
+        HandleError(err);
+        return;
+      }
+
+      notification.success({
+        message: "Custom API integration created",
+        duration: 3,
+      });
+
+      callbackFunc();
+    });
+  };
+
+  getCustomApiIntegration = (
+    req: GetCustomApiIntegrationRequest,
+    callbackFunc: (resp: GetCustomApiIntegrationResponse) => void,
+  ) => {
+    this.client.getCustomApiIntegration(req, SessionStore.getMetadata(), (err, resp) => {
+      if (err !== null) {
+        HandleError(err);
+        return;
+      }
+
+      callbackFunc(resp);
+    });
+  };
+
+  updateCustomApiIntegration = (req: UpdateCustomApiIntegrationRequest, callbackFunc: () => void) => {
+    this.client.updateCustomApiIntegration(req, SessionStore.getMetadata(), err => {
+      if (err !== null) {
+        HandleError(err);
+        return;
+      }
+
+      notification.success({
+        message: "Custom API integration updated",
+        duration: 3,
+      });
+
+      callbackFunc();
+    });
+  };
+
+  deleteCustomApiIntegration = (req: DeleteCustomApiIntegrationRequest, callbackFunc: () => void) => {
+    this.client.deleteCustomApiIntegration(req, SessionStore.getMetadata(), err => {
+      if (err !== null) {
+        HandleError(err);
+        return;
+      }
+
+      notification.success({
+        message: "Custom API integration deleted",
         duration: 3,
       });
 

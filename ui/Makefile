@@ -3,7 +3,7 @@
 build: dependencies
 	yarn build
 
-server: dependencies
+server: dependencies relink-api
 	yarn start
 
 dependencies:
@@ -15,3 +15,6 @@ clean:
 
 format:
 	./node_modules/.bin/prettier --write .
+
+relink-api:
+	yarn upgrade @chirpstack/chirpstack-api-grpc-web

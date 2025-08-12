@@ -13,7 +13,9 @@ function CustomApiIntegrationForm(props: IProps) {
   const onFinish = (values: CustomApiIntegration.AsObject) => {
     const i = new CustomApiIntegration();
     i.setApplicationId(props.initialValues.getApplicationId());
-    i.setEndpointUrl(values.endpointUrl);
+    i.setMongodbUri(values.mongodbUri);
+    i.setMongodbDatabase(values.mongodbDatabase);
+    i.setMongodbCollection(values.mongodbCollection);
     props.onFinish(i);
   };
 
@@ -25,10 +27,24 @@ function CustomApiIntegrationForm(props: IProps) {
       onFinishFailed={onFinishFailed}
     >
       <Form.Item
-        label="Endpoint URL"
-        name="endpointUrl"
-        tooltip="ChirpStack will make a POST request to this URL with the event payload."
-        rules={[{ required: true, message: "Please enter an endpoint URL!" }]}
+        label="MongoDB URI"
+        name="mongodbUri"
+        tooltip="e.g. mongodb://user:password@host:port/db?authSource=admin"
+        rules={[{ required: true, message: "Please enter a MongoDB URI!" }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label="MongoDB database"
+        name="mongodbDatabase"
+        rules={[{ required: true, message: "Please enter a MongoDB database name!" }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label="MongoDB collection"
+        name="mongodbCollection"
+        rules={[{ required: true, message: "Please enter a MongoDB collection name!" }]}
       >
         <Input />
       </Form.Item>
@@ -41,4 +57,4 @@ function CustomApiIntegrationForm(props: IProps) {
   );
 }
 
-export default CustomApiIntegrationForm;
+export default CustomApiIntegrationForm; 

@@ -427,8 +427,8 @@ function DeviceProfileForm(props: IProps) {
     dp.setPayloadCodecScript(v.payloadCodecScript);
 
     // Convert plain JS objects from form back to WmiCodecField[] for protobuf
-    if (v.payloadCodecRuntime === CodecRuntime.WMI && v.wmiFields) {
-      const wmiCodecFields = v.wmiFields
+    if (v.payloadCodecRuntime === CodecRuntime.WMI && wmiFields) {
+      const wmiCodecFields = wmiFields
         .filter(f => f) // Filter out any null/undefined entries from the form list
         .map(f => {
           const field = new WmiCodecField();
