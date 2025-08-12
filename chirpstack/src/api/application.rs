@@ -3804,7 +3804,7 @@ pub mod test {
             device_info.get("devEui").unwrap().as_str().unwrap()
         );
 
-        // 4. Cleanup: Pulire il database di test
-        db.drop().await.unwrap();
+        // 4. Cleanup: Pulire il database di test: opzionale
+        //db.drop().await.unwrap();
     }
 }
