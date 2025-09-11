@@ -36,7 +36,7 @@
   bigdecimal = "0.4"
   redis = { version = "0.32", features = ["tls-rustls", "tokio-rustls-comp"] }
   deadpool-redis = { version = "0.22", features = ["cluster", "serde"] }
-  mongodb = { version = "3.2.4", default-features = false, features = ["compat-3-0-0", "rustls-tls"] }
+  mongodb = { version = "3.2.4", default-features = false, features = ["compat-3-0-0", "rustls-tls", "dns-resolver"] }
 
   # Logging
   tracing = "0.1"
