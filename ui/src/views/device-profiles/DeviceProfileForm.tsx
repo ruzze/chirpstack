@@ -334,7 +334,7 @@ function DeviceProfileForm(props: IProps) {
     if (payloadCodecRuntime === CodecRuntime.WMI && wmiFields !== undefined) {
       const script = generateWmiScript(wmiFields);
       form.setFieldsValue({ payloadCodecScript: script });
-    }
+    }    
   }, [wmiFields, payloadCodecRuntime, form]);
 
   useEffect(() => {
@@ -428,9 +428,9 @@ function DeviceProfileForm(props: IProps) {
 
     // Convert plain JS objects from form back to WmiCodecField[] for protobuf
     if (v.payloadCodecRuntime === CodecRuntime.WMI && wmiFields) {
-      const wmiCodecFields = wmiFields
-        .filter(f => f) // Filter out any null/undefined entries from the form list
-        .map(f => {
+      const wmiCodecFields = (wmiFields as WmiField[])
+        .filter((f: WmiField) => f) // Filter out any null/undefined entries from the form list
+        .map((f: WmiField) => {
           const field = new WmiCodecField();
           field.setName(f.name);
           field.setType(f.type);
@@ -923,7 +923,13 @@ function DeviceProfileForm(props: IProps) {
             </Select>
           </Form.Item>
           {payloadCodecRuntime === CodecRuntime.JS && (
+            <Form.Item
+            label="Codec functions"
+            name="payloadCodecScript"
+            tooltip="This script is auto-generated. The decoding/encoding logic must be implemented."
+          >            
             <CodeEditor label="Codec functions" name="payloadCodecScript" disabled={props.disabled} />
+          </Form.Item>
           )}
           {payloadCodecRuntime === CodecRuntime.WMI && (
             <Card title="Codec Field Definitions">
