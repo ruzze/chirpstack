@@ -19,7 +19,7 @@
   #  * require - Always SSL (skip verification)
   #  * verify-ca - Always SSL (verify that the certificate presented by the server was signed by a trusted CA)
   #  * verify-full - Always SSL (verify that the certification presented by the server was signed by a trusted CA and the server host name matches the one in the certificate)
-  dsn = "postgres://chirpstack:chirpstack@localhost/chirpstack?sslmode=disable"
+  dsn = "postgres://chirpstack:chirpstack@postgres/chirpstack?sslmode=disable"
 
   # Max open connections.
   #
@@ -40,7 +40,7 @@
   # Server address or addresses.
   #
   # Set multiple addresses when connecting to a cluster.
-  servers = ["redis://localhost/"]
+  servers = ["redis://redis/1"]
 
   # Redis Cluster.
   #
@@ -59,23 +59,25 @@
   #
   # Multiple regions can be enabled simultaneously. Each region must match
   # the 'name' parameter of the region configuration in '[[regions]]'.
-  enabled_regions = [
-    "as923",
-    "as923_2",
-    "as923_3",
-    "as923_4",
-    "au915_0",
-    "cn470_10",
-    "cn779",
-    "eu433",
-    "eu868",
-    "in865",
-    "ism2400",
-    "kr920",
-    "ru864",
-    "us915_0",
-    "us915_1",
-  ]
+
+  enabled_regions = [ "eu868" ]
+  #enabled_regions = [
+  #  "as923",
+  #  "as923_2",
+  #  "as923_3",
+  #  "as923_4",
+  #  "au915_0",
+  #  "cn470_10",
+  #  "cn779",
+  #  "eu433",
+  #  "eu868",
+  #  "in865",
+  #  "ism2400",
+  #  "kr920",
+  #  "ru864",
+  #  "us915_0",
+  #  "us915_1",
+  #]
 
 
 # API interface configuration.
@@ -97,5 +99,5 @@
   enabled = ["mqtt"]
 
   [integration.mqtt]
-    server = "tcp://localhost:1883/"
+    server = "tcp://mosquitto:1883/"
     json = true

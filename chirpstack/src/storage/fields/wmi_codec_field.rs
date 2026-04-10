@@ -1,10 +1,12 @@
 use diesel::backend::Backend;
-use diesel::{deserialize, serialize};
 use diesel::pg::Pg;
 use diesel::sql_types::Jsonb;
+use diesel::{deserialize, serialize};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, AsExpression, FromSqlRow, Default)]
+#[derive(
+    Serialize, Deserialize, Debug, Clone, PartialEq, Eq, AsExpression, FromSqlRow, Default,
+)]
 #[diesel(sql_type = Jsonb)]
 pub struct WmiCodecField {
     pub name: String,
@@ -35,4 +37,4 @@ impl serialize::ToSql<Jsonb, Pg> for WmiCodecFields {
         let value = serde_json::to_value(&self.0)?;
         <serde_json::Value as serialize::ToSql<Jsonb, Pg>>::to_sql(&value, &mut out.reborrow())
     }
-} 
+}

@@ -21,6 +21,7 @@ import PilotThingsCard from "./integrations/PilotThingsCard";
 import LoRaCloudCard from "./integrations/LoRaCloudCard";
 import ThingsBoardCard from "./integrations/ThingsBoardCard";
 import IftttCard from "./integrations/IftttCard";
+import CustomApiCard from "./integrations/CustomApiCard";
 
 interface IProps {
   application: Application;
@@ -122,6 +123,13 @@ function ListIntegrations(props: IProps) {
           configured.push(<ThingsBoardCard application={props.application} />);
         } else {
           available.push(<ThingsBoardCard application={props.application} add />);
+        }
+
+        // Custom API
+        if (includes(resp.getResultList(), IntegrationKind.CUSTOM_API)) {
+          configured.push(<CustomApiCard application={props.application} />);
+        } else {
+          available.push(<CustomApiCard application={props.application} add />);
         }
 
         setConfigured(configured);

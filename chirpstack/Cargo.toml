@@ -3,8 +3,8 @@
   description = "ChirpStack is an open-source LoRaWAN(TM) Network Server"
   repository = "https://github.com/chirpstack/chirpstack"
   homepage = "https://www.chirpstack.io/"
-  version = "4.13.0-wmi-patch"
-  authors = ["Orne Brocaar <info@brocaar.com>"]
+  version = "4.13.1-wmi-patch"
+  authors = ["Orne Brocaar <info@brocaar.com>, Marco Ruzzenente <marco.ruzzenente@gmail.com>"]
   edition = "2021"
   publish = false
   license = "MIT"

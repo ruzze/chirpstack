@@ -39,6 +39,9 @@ import EditThingsBoardIntegration from "./integrations/EditThingsBoardIntegratio
 import GenerateMqttCertificate from "./integrations/GenerateMqttCertificate";
 import CreateIftttIntegration from "./integrations/CreateIftttIntegration";
 import EditIftttIntegration from "./integrations/EditIftttIntegration";
+import CreateCustomApiIntegration from "./integrations/CreateCustomApiIntegration";
+import EditCustomApiIntegration from "./integrations/EditCustomApiIntegration";
+
 import { useTitle } from "../helpers";
 
 interface IProps {
@@ -197,6 +200,8 @@ function ApplicationLayout(props: IProps) {
             path="/integrations/ifttt/edit"
             element={<EditIftttIntegration application={app} measurementKeys={props.measurementKeys} />}
           />
+          <Route path="/integrations/custom-api/create" element={<CreateCustomApiIntegration application={app} />} />
+          <Route path="/integrations/custom-api/edit" element={<EditCustomApiIntegration application={app} />} />
         </Routes>
       </Card>
     </Space>

@@ -267,6 +267,7 @@ pub mod test {
             json: true,
             event_routing_key: "application.{{application_id}}.device.{{dev_eui}}.event.{{event}}"
                 .to_string(),
+            exchange: "amq.topic".to_string(),
         };
 
         let conn = loop {

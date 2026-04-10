@@ -295,7 +295,9 @@ pub struct IftttConfiguration {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CustomApiConfiguration {
-    pub endpoint_url: String,
+    pub mongodb_uri: String,
+    pub mongodb_database: String,
+    pub mongodb_collection: String,
 }
 
 #[derive(Clone, Queryable, Insertable, PartialEq, Eq, Debug)]

@@ -2,9 +2,9 @@ use std::collections::HashMap;
 
 use anyhow::Result;
 use chrono::{DateTime, Utc};
+use diesel::pg::sql_types::Jsonb;
 use diesel::{dsl, prelude::*};
 use diesel_async::RunQueryDsl;
-use diesel::pg::sql_types::Jsonb;
 use tracing::info;
 use uuid::Uuid;
 
@@ -50,7 +50,7 @@ pub struct DeviceProfile {
     pub class_b_params: Option<fields::ClassBParams>,
     pub class_c_params: Option<fields::ClassCParams>,
     pub relay_params: Option<fields::RelayParams>,
-    pub app_layer_params: fields::AppLayerParams,    
+    pub app_layer_params: fields::AppLayerParams,
     pub wmi_codec_fields: fields::WmiCodecFields,
 }
 

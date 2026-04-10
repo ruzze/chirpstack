@@ -1135,8 +1135,14 @@ message CustomApiIntegration {
   // Application ID (UUID).
   string application_id = 1;
 
-  // Endpoint URL.
-  string endpoint_url = 2;
+  // MongoDB URI.
+  string mongodb_uri = 2;
+
+  // MongoDB database name.
+  string mongodb_database = 3;
+
+  // MongoDB collection name.
+  string mongodb_collection = 4;
 }
 
 message CreateCustomApiIntegrationRequest {

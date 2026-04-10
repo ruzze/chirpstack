@@ -11,8 +11,11 @@ use serde::Serialize;
 use tracing::{info, trace, warn};
 
 use super::Integration as IntegrationTrait;
+use crate::codec;
 use crate::storage::application::CustomApiConfiguration;
 use chirpstack_api::integration;
+use mongodb::{bson::doc, Client as MongoClient}; // <-- Import necessari da MongoDB
+use serde_json::Value as JsonValue;
 
 static CLIENT: OnceLock<Client> = OnceLock::new();
 
@@ -29,7 +32,7 @@ fn get_client() -> Client {
 }
 
 pub struct Integration {
-    endpoint_url: String,
+    config: CustomApiConfiguration,
 }
 
 #[derive(Serialize)]
@@ -39,43 +42,25 @@ pub struct UplinkPayload<'a> {
 }
 
 impl Integration {
-    pub fn new(conf: &CustomApiConfiguration) -> Integration {
-        trace!("Initializing custom_api integration");
-
+    pub fn new(conf: &CustomApiConfiguration) -> Self {
         Integration {
-            endpoint_url: conf.endpoint_url.clone(),
+            config: conf.clone(),
         }
     }
 
-    async fn post_uplink(&self, pl: &integration::UplinkEvent) -> Result<()> {
-        let mut headers = HeaderMap::new();
-        headers.insert(CONTENT_TYPE, "application/json".parse().unwrap());
+    async fn save_to_mongodb(&self, doc: JsonValue) -> Result<()> {
+        info!("Connecting to MongoDB");
+        let client = MongoClient::with_uri_str(&self.config.mongodb_uri).await?;
+        let db = client.database(&self.config.mongodb_database);
+        let coll = db.collection::<mongodb::bson::Document>(&self.config.mongodb_collection);
 
-        let payload = UplinkPayload {
-            event: "up",
-            payload: pl,
-        };
+        let bson_doc = mongodb::bson::to_bson(&doc)?
+            .as_document()
+            .ok_or_else(|| anyhow!("Failed to convert to BSON document"))?
+            .clone();
 
-        info!(url = %self.endpoint_url, "Posting uplink event to custom API");
-        let res = get_client()
-            .post(&self.endpoint_url)
-            .json(&payload)
-            .headers(headers)
-            .send()
-            .await;
-
-        match res {
-            Ok(res) => match res.error_for_status() {
-                Ok(_) => {}
-                Err(e) => {
-                    warn!(url = %self.endpoint_url, error = %e, "Posting uplink event to custom API failed");
-                }
-            },
-            Err(e) => {
-                warn!(url = %self.endpoint_url, error = %e, "Posting uplink event to custom API failed");
-            }
-        }
-
+        info!("Inserting document into MongoDB");
+        coll.insert_one(bson_doc).await?;
         Ok(())
     }
 }
@@ -87,7 +72,31 @@ impl IntegrationTrait for Integration {
         _vars: &HashMap<String, String>,
         pl: &integration::UplinkEvent,
     ) -> Result<()> {
-        self.post_uplink(pl).await
+        info!("Handling uplink event for MongoDB integration");
+
+        let payload_to_save: JsonValue = if let Some(obj) = &pl.object {
+            info!("Using decoded JSON object from codec");
+            serde_json::to_value(obj)?
+        } else {
+            info!("Codec did not produce a JSON object, using raw data (hex encoded)");
+            serde_json::json!({ "data": hex::encode(&pl.data) })
+        };
+
+        let full_doc = serde_json::json!({
+            "deviceInfo": pl.device_info,
+            "payload": payload_to_save,
+            "rxInfo": pl.rx_info,
+            "txInfo": pl.tx_info,
+            "time": pl.time,
+        });
+
+        if let Err(e) = self.save_to_mongodb(full_doc).await {
+            warn!(error = %e, "Failed to save document to MongoDB");
+            // Decidi se vuoi che l'errore interrompa il flusso o solo loggarlo.
+            // Per ora lo logghiamo e continuiamo.
+        }
+
+        Ok(())
     }
 
     async fn join_event(
