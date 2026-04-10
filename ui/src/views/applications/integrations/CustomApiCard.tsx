@@ -42,15 +42,21 @@ function CustomApiCard(props: IProps) {
   return (
     <Col span={8}>
       <Card
-        title="Custom API"
+        title="WildLife Integration"
         className="integration-card"
-        cover={<img alt="Custom API" src="/integrations/custom_api.png" style={{ padding: 1 }} />}
+        cover={
+          <img
+            alt="Wildlife"
+            src="https://wildlifemovement.org/wp-content/uploads/2022/11/123-2048x674.jpg"
+            style={{ padding: 1 }}
+          />
+        }
         actions={actions}
       >
-        <Card.Meta description="The Custom API integration forwards events to a user-configurable API endpoint." />
+        <Card.Meta description="The Wildlife Integrations forwards events to our mongodb databases." />
       </Card>
     </Col>
   );
 }
 
-export default CustomApiCard; 
+export default CustomApiCard;

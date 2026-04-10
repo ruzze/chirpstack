@@ -24,7 +24,7 @@ pub enum Codec {
     NONE,
     CAYENNE_LPP,
     JS,
-    WMI
+    WMI,
 }
 
 impl fmt::Display for Codec {

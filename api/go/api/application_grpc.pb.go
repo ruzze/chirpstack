@@ -66,6 +66,10 @@ const (
 	ApplicationService_GetIftttIntegration_FullMethodName                      = "/api.ApplicationService/GetIftttIntegration"
 	ApplicationService_UpdateIftttIntegration_FullMethodName                   = "/api.ApplicationService/UpdateIftttIntegration"
 	ApplicationService_DeleteIftttIntegration_FullMethodName                   = "/api.ApplicationService/DeleteIftttIntegration"
+	ApplicationService_CreateCustomApiIntegration_FullMethodName               = "/api.ApplicationService/CreateCustomApiIntegration"
+	ApplicationService_GetCustomApiIntegration_FullMethodName                  = "/api.ApplicationService/GetCustomApiIntegration"
+	ApplicationService_UpdateCustomApiIntegration_FullMethodName               = "/api.ApplicationService/UpdateCustomApiIntegration"
+	ApplicationService_DeleteCustomApiIntegration_FullMethodName               = "/api.ApplicationService/DeleteCustomApiIntegration"
 	ApplicationService_GenerateMqttIntegrationClientCertificate_FullMethodName = "/api.ApplicationService/GenerateMqttIntegrationClientCertificate"
 	ApplicationService_ListDeviceProfiles_FullMethodName                       = "/api.ApplicationService/ListDeviceProfiles"
 	ApplicationService_ListDeviceTags_FullMethodName                           = "/api.ApplicationService/ListDeviceTags"
@@ -170,6 +174,14 @@ type ApplicationServiceClient interface {
 	UpdateIftttIntegration(ctx context.Context, in *UpdateIftttIntegrationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Delete IFTTT integration.
 	DeleteIftttIntegration(ctx context.Context, in *DeleteIftttIntegrationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Create Custom API integration.
+	CreateCustomApiIntegration(ctx context.Context, in *CreateCustomApiIntegrationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Get Custom API integration.
+	GetCustomApiIntegration(ctx context.Context, in *GetCustomApiIntegrationRequest, opts ...grpc.CallOption) (*GetCustomApiIntegrationResponse, error)
+	// Update Custom API integration.
+	UpdateCustomApiIntegration(ctx context.Context, in *UpdateCustomApiIntegrationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Delete Custom API integration.
+	DeleteCustomApiIntegration(ctx context.Context, in *DeleteCustomApiIntegrationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Generates application ID specific client-certificate.
 	GenerateMqttIntegrationClientCertificate(ctx context.Context, in *GenerateMqttIntegrationClientCertificateRequest, opts ...grpc.CallOption) (*GenerateMqttIntegrationClientCertificateResponse, error)
 	// List device-profiles used within the given application.
@@ -646,6 +658,46 @@ func (c *applicationServiceClient) DeleteIftttIntegration(ctx context.Context, i
 	return out, nil
 }
 
+func (c *applicationServiceClient) CreateCustomApiIntegration(ctx context.Context, in *CreateCustomApiIntegrationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ApplicationService_CreateCustomApiIntegration_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *applicationServiceClient) GetCustomApiIntegration(ctx context.Context, in *GetCustomApiIntegrationRequest, opts ...grpc.CallOption) (*GetCustomApiIntegrationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCustomApiIntegrationResponse)
+	err := c.cc.Invoke(ctx, ApplicationService_GetCustomApiIntegration_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *applicationServiceClient) UpdateCustomApiIntegration(ctx context.Context, in *UpdateCustomApiIntegrationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ApplicationService_UpdateCustomApiIntegration_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *applicationServiceClient) DeleteCustomApiIntegration(ctx context.Context, in *DeleteCustomApiIntegrationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ApplicationService_DeleteCustomApiIntegration_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *applicationServiceClient) GenerateMqttIntegrationClientCertificate(ctx context.Context, in *GenerateMqttIntegrationClientCertificateRequest, opts ...grpc.CallOption) (*GenerateMqttIntegrationClientCertificateResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GenerateMqttIntegrationClientCertificateResponse)
@@ -775,6 +827,14 @@ type ApplicationServiceServer interface {
 	UpdateIftttIntegration(context.Context, *UpdateIftttIntegrationRequest) (*emptypb.Empty, error)
 	// Delete IFTTT integration.
 	DeleteIftttIntegration(context.Context, *DeleteIftttIntegrationRequest) (*emptypb.Empty, error)
+	// Create Custom API integration.
+	CreateCustomApiIntegration(context.Context, *CreateCustomApiIntegrationRequest) (*emptypb.Empty, error)
+	// Get Custom API integration.
+	GetCustomApiIntegration(context.Context, *GetCustomApiIntegrationRequest) (*GetCustomApiIntegrationResponse, error)
+	// Update Custom API integration.
+	UpdateCustomApiIntegration(context.Context, *UpdateCustomApiIntegrationRequest) (*emptypb.Empty, error)
+	// Delete Custom API integration.
+	DeleteCustomApiIntegration(context.Context, *DeleteCustomApiIntegrationRequest) (*emptypb.Empty, error)
 	// Generates application ID specific client-certificate.
 	GenerateMqttIntegrationClientCertificate(context.Context, *GenerateMqttIntegrationClientCertificateRequest) (*GenerateMqttIntegrationClientCertificateResponse, error)
 	// List device-profiles used within the given application.
@@ -928,6 +988,18 @@ func (UnimplementedApplicationServiceServer) UpdateIftttIntegration(context.Cont
 }
 func (UnimplementedApplicationServiceServer) DeleteIftttIntegration(context.Context, *DeleteIftttIntegrationRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteIftttIntegration not implemented")
+}
+func (UnimplementedApplicationServiceServer) CreateCustomApiIntegration(context.Context, *CreateCustomApiIntegrationRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCustomApiIntegration not implemented")
+}
+func (UnimplementedApplicationServiceServer) GetCustomApiIntegration(context.Context, *GetCustomApiIntegrationRequest) (*GetCustomApiIntegrationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCustomApiIntegration not implemented")
+}
+func (UnimplementedApplicationServiceServer) UpdateCustomApiIntegration(context.Context, *UpdateCustomApiIntegrationRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCustomApiIntegration not implemented")
+}
+func (UnimplementedApplicationServiceServer) DeleteCustomApiIntegration(context.Context, *DeleteCustomApiIntegrationRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCustomApiIntegration not implemented")
 }
 func (UnimplementedApplicationServiceServer) GenerateMqttIntegrationClientCertificate(context.Context, *GenerateMqttIntegrationClientCertificateRequest) (*GenerateMqttIntegrationClientCertificateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateMqttIntegrationClientCertificate not implemented")
@@ -1787,6 +1859,78 @@ func _ApplicationService_DeleteIftttIntegration_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ApplicationService_CreateCustomApiIntegration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCustomApiIntegrationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServiceServer).CreateCustomApiIntegration(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ApplicationService_CreateCustomApiIntegration_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServiceServer).CreateCustomApiIntegration(ctx, req.(*CreateCustomApiIntegrationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ApplicationService_GetCustomApiIntegration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCustomApiIntegrationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServiceServer).GetCustomApiIntegration(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ApplicationService_GetCustomApiIntegration_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServiceServer).GetCustomApiIntegration(ctx, req.(*GetCustomApiIntegrationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ApplicationService_UpdateCustomApiIntegration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCustomApiIntegrationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServiceServer).UpdateCustomApiIntegration(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ApplicationService_UpdateCustomApiIntegration_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServiceServer).UpdateCustomApiIntegration(ctx, req.(*UpdateCustomApiIntegrationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ApplicationService_DeleteCustomApiIntegration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCustomApiIntegrationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationServiceServer).DeleteCustomApiIntegration(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ApplicationService_DeleteCustomApiIntegration_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationServiceServer).DeleteCustomApiIntegration(ctx, req.(*DeleteCustomApiIntegrationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ApplicationService_GenerateMqttIntegrationClientCertificate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GenerateMqttIntegrationClientCertificateRequest)
 	if err := dec(in); err != nil {
@@ -2031,6 +2175,22 @@ var ApplicationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteIftttIntegration",
 			Handler:    _ApplicationService_DeleteIftttIntegration_Handler,
+		},
+		{
+			MethodName: "CreateCustomApiIntegration",
+			Handler:    _ApplicationService_CreateCustomApiIntegration_Handler,
+		},
+		{
+			MethodName: "GetCustomApiIntegration",
+			Handler:    _ApplicationService_GetCustomApiIntegration_Handler,
+		},
+		{
+			MethodName: "UpdateCustomApiIntegration",
+			Handler:    _ApplicationService_UpdateCustomApiIntegration_Handler,
+		},
+		{
+			MethodName: "DeleteCustomApiIntegration",
+			Handler:    _ApplicationService_DeleteCustomApiIntegration_Handler,
 		},
 		{
 			MethodName: "GenerateMqttIntegrationClientCertificate",

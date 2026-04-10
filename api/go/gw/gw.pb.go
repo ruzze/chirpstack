@@ -1208,8 +1208,7 @@ type LoraModulationInfo struct {
 	PolarizationInversion bool `protobuf:"varint,4,opt,name=polarization_inversion,json=polarizationInversion,proto3" json:"polarization_inversion,omitempty"`
 	// Preamble length (for TX).
 	Preamble uint32 `protobuf:"varint,6,opt,name=preamble,proto3" json:"preamble,omitempty"`
-	//	No CRC (for TX).
-	//
+	//  No CRC (for TX).
 	// If true, do not send a CRC in the packet.
 	NoCrc         bool `protobuf:"varint,7,opt,name=no_crc,json=noCrc,proto3" json:"no_crc,omitempty"`
 	unknownFields protoimpl.UnknownFields

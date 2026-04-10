@@ -34,6 +34,8 @@ const (
 	CodecRuntime_CAYENNE_LPP CodecRuntime = 1
 	// JavaScript.
 	CodecRuntime_JS CodecRuntime = 2
+	// WMI
+	CodecRuntime_WMI CodecRuntime = 3
 )
 
 // Enum value maps for CodecRuntime.
@@ -42,11 +44,13 @@ var (
 		0: "NONE",
 		1: "CAYENNE_LPP",
 		2: "JS",
+		3: "WMI",
 	}
 	CodecRuntime_value = map[string]int32{
 		"NONE":        0,
 		"CAYENNE_LPP": 1,
 		"JS":          2,
+		"WMI":         3,
 	}
 )
 
@@ -478,6 +482,70 @@ func (Ts005Version) EnumDescriptor() ([]byte, []int) {
 	return file_api_device_profile_proto_rawDescGZIP(), []int{7}
 }
 
+// Defines a WMI (Wildlife Monitoring Initiative) codec field.
+type WmiCodecField struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Field name.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Field type.
+	Type string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	// Number of bytes.
+	Bytes         uint32 `protobuf:"varint,3,opt,name=bytes,proto3" json:"bytes,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WmiCodecField) Reset() {
+	*x = WmiCodecField{}
+	mi := &file_api_device_profile_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WmiCodecField) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WmiCodecField) ProtoMessage() {}
+
+func (x *WmiCodecField) ProtoReflect() protoreflect.Message {
+	mi := &file_api_device_profile_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WmiCodecField.ProtoReflect.Descriptor instead.
+func (*WmiCodecField) Descriptor() ([]byte, []int) {
+	return file_api_device_profile_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *WmiCodecField) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *WmiCodecField) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *WmiCodecField) GetBytes() uint32 {
+	if x != nil {
+		return x.Bytes
+	}
+	return 0
+}
+
 type DeviceProfile struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Device-profile ID (UUID).
@@ -610,41 +678,40 @@ type DeviceProfile struct {
 	// BucketSize TOKEN = _reload_rate x _bucket_size
 	//
 	// Valid values (0 - 3):
-	//
-	//	0 = 1
-	//	1 = 2
-	//	2 = 4
-	//	3 = 12
+	//   0 = 1
+	//   1 = 2
+	//   2 = 4
+	//   3 = 12
 	RelayEdUplinkLimitBucketSize uint32 `protobuf:"varint,42,opt,name=relay_ed_uplink_limit_bucket_size,json=relayEdUplinkLimitBucketSize,proto3" json:"relay_ed_uplink_limit_bucket_size,omitempty"`
 	// Relay end-device uplink limit reload rate.
 	//
 	// Valid values:
-	//   - 0 - 62 = X tokens every hour
-	//   - 63     = no limitation
+	//   * 0 - 62 = X tokens every hour
+	//   * 63     = no limitation
 	RelayEdUplinkLimitReloadRate uint32 `protobuf:"varint,43,opt,name=relay_ed_uplink_limit_reload_rate,json=relayEdUplinkLimitReloadRate,proto3" json:"relay_ed_uplink_limit_reload_rate,omitempty"`
 	// Relay join-request limit reload rate.
 	//
 	// Valid values:
-	//   - 0 - 126 = X tokens every hour
-	//   - 127     = no limitation
+	//   * 0 - 126 = X tokens every hour
+	//   * 127     = no limitation
 	RelayJoinReqLimitReloadRate uint32 `protobuf:"varint,44,opt,name=relay_join_req_limit_reload_rate,json=relayJoinReqLimitReloadRate,proto3" json:"relay_join_req_limit_reload_rate,omitempty"`
 	// Relay notify limit reload rate.
 	//
 	// Valid values:
-	//   - 0 - 126 = X tokens every hour
-	//   - 127     = no limitation
+	//   * 0 - 126 = X tokens every hour
+	//   * 127     = no limitation
 	RelayNotifyLimitReloadRate uint32 `protobuf:"varint,45,opt,name=relay_notify_limit_reload_rate,json=relayNotifyLimitReloadRate,proto3" json:"relay_notify_limit_reload_rate,omitempty"`
 	// Relay global uplink limit reload rate.
 	//
 	// Valid values:
-	//   - 0 - 126 = X tokens every hour
-	//   - 127     = no limitation
+	//   * 0 - 126 = X tokens every hour
+	//   * 127     = no limitation
 	RelayGlobalUplinkLimitReloadRate uint32 `protobuf:"varint,46,opt,name=relay_global_uplink_limit_reload_rate,json=relayGlobalUplinkLimitReloadRate,proto3" json:"relay_global_uplink_limit_reload_rate,omitempty"`
 	// Relay overall limit reload rate.
 	//
 	// Valid values:
-	//   - 0 - 126 = X tokens every hour
-	//   - 127     = no limitation
+	//   * 0 - 126 = X tokens every hour
+	//   * 127     = no limitation
 	RelayOverallLimitReloadRate uint32 `protobuf:"varint,47,opt,name=relay_overall_limit_reload_rate,json=relayOverallLimitReloadRate,proto3" json:"relay_overall_limit_reload_rate,omitempty"`
 	// Relay join-request limit bucket size.
 	//
@@ -653,11 +720,10 @@ type DeviceProfile struct {
 	// BucketSize TOKEN = _reload_rate x _bucket_size
 	//
 	// Valid values (0 - 3):
-	//
-	//	0 = 1
-	//	1 = 2
-	//	2 = 4
-	//	3 = 12
+	//   0 = 1
+	//   1 = 2
+	//   2 = 4
+	//   3 = 12
 	RelayJoinReqLimitBucketSize uint32 `protobuf:"varint,48,opt,name=relay_join_req_limit_bucket_size,json=relayJoinReqLimitBucketSize,proto3" json:"relay_join_req_limit_bucket_size,omitempty"`
 	// Relay notify limit bucket size.
 	//
@@ -666,11 +732,10 @@ type DeviceProfile struct {
 	// BucketSize TOKEN = _reload_rate x _bucket_size
 	//
 	// Valid values (0 - 3):
-	//
-	//	0 = 1
-	//	1 = 2
-	//	2 = 4
-	//	3 = 12
+	//   0 = 1
+	//   1 = 2
+	//   2 = 4
+	//   3 = 12
 	RelayNotifyLimitBucketSize uint32 `protobuf:"varint,49,opt,name=relay_notify_limit_bucket_size,json=relayNotifyLimitBucketSize,proto3" json:"relay_notify_limit_bucket_size,omitempty"`
 	// Relay globak uplink limit bucket size.
 	//
@@ -679,11 +744,10 @@ type DeviceProfile struct {
 	// BucketSize TOKEN = _reload_rate x _bucket_size
 	//
 	// Valid values (0 - 3):
-	//
-	//	0 = 1
-	//	1 = 2
-	//	2 = 4
-	//	3 = 12
+	//   0 = 1
+	//   1 = 2
+	//   2 = 4
+	//   3 = 12
 	RelayGlobalUplinkLimitBucketSize uint32 `protobuf:"varint,50,opt,name=relay_global_uplink_limit_bucket_size,json=relayGlobalUplinkLimitBucketSize,proto3" json:"relay_global_uplink_limit_bucket_size,omitempty"`
 	// Relay overall limit bucket size.
 	//
@@ -692,11 +756,10 @@ type DeviceProfile struct {
 	// BucketSize TOKEN = _reload_rate x _bucket_size
 	//
 	// Valid values (0 - 3):
-	//
-	//	0 = 1
-	//	1 = 2
-	//	2 = 4
-	//	3 = 12
+	//   0 = 1
+	//   1 = 2
+	//   2 = 4
+	//   3 = 12
 	RelayOverallLimitBucketSize uint32 `protobuf:"varint,51,opt,name=relay_overall_limit_bucket_size,json=relayOverallLimitBucketSize,proto3" json:"relay_overall_limit_bucket_size,omitempty"`
 	// Allow roaming.
 	//
@@ -712,13 +775,17 @@ type DeviceProfile struct {
 	Rx1Delay uint32 `protobuf:"varint,53,opt,name=rx1_delay,json=rx1Delay,proto3" json:"rx1_delay,omitempty"`
 	// Application Layer parameters.
 	AppLayerParams *AppLayerParams `protobuf:"bytes,54,opt,name=app_layer_params,json=appLayerParams,proto3" json:"app_layer_params,omitempty"`
+	// WMI Codec fields.
+	// This is used to automatically generate the codec scripts and device-side
+	// C-code.
+	WmiCodecFields []*WmiCodecField `protobuf:"bytes,55,rep,name=wmi_codec_fields,json=wmiCodecFields,proto3" json:"wmi_codec_fields,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
 func (x *DeviceProfile) Reset() {
 	*x = DeviceProfile{}
-	mi := &file_api_device_profile_proto_msgTypes[0]
+	mi := &file_api_device_profile_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -730,7 +797,7 @@ func (x *DeviceProfile) String() string {
 func (*DeviceProfile) ProtoMessage() {}
 
 func (x *DeviceProfile) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[0]
+	mi := &file_api_device_profile_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -743,7 +810,7 @@ func (x *DeviceProfile) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceProfile.ProtoReflect.Descriptor instead.
 func (*DeviceProfile) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{0}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *DeviceProfile) GetId() string {
@@ -1124,6 +1191,13 @@ func (x *DeviceProfile) GetAppLayerParams() *AppLayerParams {
 	return nil
 }
 
+func (x *DeviceProfile) GetWmiCodecFields() []*WmiCodecField {
+	if x != nil {
+		return x.WmiCodecFields
+	}
+	return nil
+}
+
 type Measurement struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name (user defined).
@@ -1136,7 +1210,7 @@ type Measurement struct {
 
 func (x *Measurement) Reset() {
 	*x = Measurement{}
-	mi := &file_api_device_profile_proto_msgTypes[1]
+	mi := &file_api_device_profile_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1148,7 +1222,7 @@ func (x *Measurement) String() string {
 func (*Measurement) ProtoMessage() {}
 
 func (x *Measurement) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[1]
+	mi := &file_api_device_profile_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1161,7 +1235,7 @@ func (x *Measurement) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Measurement.ProtoReflect.Descriptor instead.
 func (*Measurement) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{1}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Measurement) GetName() string {
@@ -1198,7 +1272,7 @@ type AppLayerParams struct {
 
 func (x *AppLayerParams) Reset() {
 	*x = AppLayerParams{}
-	mi := &file_api_device_profile_proto_msgTypes[2]
+	mi := &file_api_device_profile_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1210,7 +1284,7 @@ func (x *AppLayerParams) String() string {
 func (*AppLayerParams) ProtoMessage() {}
 
 func (x *AppLayerParams) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[2]
+	mi := &file_api_device_profile_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1223,7 +1297,7 @@ func (x *AppLayerParams) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AppLayerParams.ProtoReflect.Descriptor instead.
 func (*AppLayerParams) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{2}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AppLayerParams) GetTs003Version() Ts003Version {
@@ -1296,7 +1370,7 @@ type DeviceProfileListItem struct {
 
 func (x *DeviceProfileListItem) Reset() {
 	*x = DeviceProfileListItem{}
-	mi := &file_api_device_profile_proto_msgTypes[3]
+	mi := &file_api_device_profile_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1308,7 +1382,7 @@ func (x *DeviceProfileListItem) String() string {
 func (*DeviceProfileListItem) ProtoMessage() {}
 
 func (x *DeviceProfileListItem) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[3]
+	mi := &file_api_device_profile_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1321,7 +1395,7 @@ func (x *DeviceProfileListItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceProfileListItem.ProtoReflect.Descriptor instead.
 func (*DeviceProfileListItem) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{3}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *DeviceProfileListItem) GetId() string {
@@ -1404,7 +1478,7 @@ type CreateDeviceProfileRequest struct {
 
 func (x *CreateDeviceProfileRequest) Reset() {
 	*x = CreateDeviceProfileRequest{}
-	mi := &file_api_device_profile_proto_msgTypes[4]
+	mi := &file_api_device_profile_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1416,7 +1490,7 @@ func (x *CreateDeviceProfileRequest) String() string {
 func (*CreateDeviceProfileRequest) ProtoMessage() {}
 
 func (x *CreateDeviceProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[4]
+	mi := &file_api_device_profile_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1429,7 +1503,7 @@ func (x *CreateDeviceProfileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateDeviceProfileRequest.ProtoReflect.Descriptor instead.
 func (*CreateDeviceProfileRequest) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{4}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *CreateDeviceProfileRequest) GetDeviceProfile() *DeviceProfile {
@@ -1449,7 +1523,7 @@ type CreateDeviceProfileResponse struct {
 
 func (x *CreateDeviceProfileResponse) Reset() {
 	*x = CreateDeviceProfileResponse{}
-	mi := &file_api_device_profile_proto_msgTypes[5]
+	mi := &file_api_device_profile_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1461,7 +1535,7 @@ func (x *CreateDeviceProfileResponse) String() string {
 func (*CreateDeviceProfileResponse) ProtoMessage() {}
 
 func (x *CreateDeviceProfileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[5]
+	mi := &file_api_device_profile_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1474,7 +1548,7 @@ func (x *CreateDeviceProfileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateDeviceProfileResponse.ProtoReflect.Descriptor instead.
 func (*CreateDeviceProfileResponse) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{5}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CreateDeviceProfileResponse) GetId() string {
@@ -1494,7 +1568,7 @@ type GetDeviceProfileRequest struct {
 
 func (x *GetDeviceProfileRequest) Reset() {
 	*x = GetDeviceProfileRequest{}
-	mi := &file_api_device_profile_proto_msgTypes[6]
+	mi := &file_api_device_profile_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1506,7 +1580,7 @@ func (x *GetDeviceProfileRequest) String() string {
 func (*GetDeviceProfileRequest) ProtoMessage() {}
 
 func (x *GetDeviceProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[6]
+	mi := &file_api_device_profile_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1519,7 +1593,7 @@ func (x *GetDeviceProfileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetDeviceProfileRequest.ProtoReflect.Descriptor instead.
 func (*GetDeviceProfileRequest) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{6}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetDeviceProfileRequest) GetId() string {
@@ -1543,7 +1617,7 @@ type GetDeviceProfileResponse struct {
 
 func (x *GetDeviceProfileResponse) Reset() {
 	*x = GetDeviceProfileResponse{}
-	mi := &file_api_device_profile_proto_msgTypes[7]
+	mi := &file_api_device_profile_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1555,7 +1629,7 @@ func (x *GetDeviceProfileResponse) String() string {
 func (*GetDeviceProfileResponse) ProtoMessage() {}
 
 func (x *GetDeviceProfileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[7]
+	mi := &file_api_device_profile_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1568,7 +1642,7 @@ func (x *GetDeviceProfileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetDeviceProfileResponse.ProtoReflect.Descriptor instead.
 func (*GetDeviceProfileResponse) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{7}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetDeviceProfileResponse) GetDeviceProfile() *DeviceProfile {
@@ -1602,7 +1676,7 @@ type UpdateDeviceProfileRequest struct {
 
 func (x *UpdateDeviceProfileRequest) Reset() {
 	*x = UpdateDeviceProfileRequest{}
-	mi := &file_api_device_profile_proto_msgTypes[8]
+	mi := &file_api_device_profile_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1614,7 +1688,7 @@ func (x *UpdateDeviceProfileRequest) String() string {
 func (*UpdateDeviceProfileRequest) ProtoMessage() {}
 
 func (x *UpdateDeviceProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[8]
+	mi := &file_api_device_profile_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1627,7 +1701,7 @@ func (x *UpdateDeviceProfileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateDeviceProfileRequest.ProtoReflect.Descriptor instead.
 func (*UpdateDeviceProfileRequest) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{8}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *UpdateDeviceProfileRequest) GetDeviceProfile() *DeviceProfile {
@@ -1647,7 +1721,7 @@ type DeleteDeviceProfileRequest struct {
 
 func (x *DeleteDeviceProfileRequest) Reset() {
 	*x = DeleteDeviceProfileRequest{}
-	mi := &file_api_device_profile_proto_msgTypes[9]
+	mi := &file_api_device_profile_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1659,7 +1733,7 @@ func (x *DeleteDeviceProfileRequest) String() string {
 func (*DeleteDeviceProfileRequest) ProtoMessage() {}
 
 func (x *DeleteDeviceProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[9]
+	mi := &file_api_device_profile_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1672,7 +1746,7 @@ func (x *DeleteDeviceProfileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteDeviceProfileRequest.ProtoReflect.Descriptor instead.
 func (*DeleteDeviceProfileRequest) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{9}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DeleteDeviceProfileRequest) GetId() string {
@@ -1699,7 +1773,7 @@ type ListDeviceProfilesRequest struct {
 
 func (x *ListDeviceProfilesRequest) Reset() {
 	*x = ListDeviceProfilesRequest{}
-	mi := &file_api_device_profile_proto_msgTypes[10]
+	mi := &file_api_device_profile_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1711,7 +1785,7 @@ func (x *ListDeviceProfilesRequest) String() string {
 func (*ListDeviceProfilesRequest) ProtoMessage() {}
 
 func (x *ListDeviceProfilesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[10]
+	mi := &file_api_device_profile_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1724,7 +1798,7 @@ func (x *ListDeviceProfilesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListDeviceProfilesRequest.ProtoReflect.Descriptor instead.
 func (*ListDeviceProfilesRequest) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{10}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *ListDeviceProfilesRequest) GetLimit() uint32 {
@@ -1767,7 +1841,7 @@ type ListDeviceProfilesResponse struct {
 
 func (x *ListDeviceProfilesResponse) Reset() {
 	*x = ListDeviceProfilesResponse{}
-	mi := &file_api_device_profile_proto_msgTypes[11]
+	mi := &file_api_device_profile_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1779,7 +1853,7 @@ func (x *ListDeviceProfilesResponse) String() string {
 func (*ListDeviceProfilesResponse) ProtoMessage() {}
 
 func (x *ListDeviceProfilesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[11]
+	mi := &file_api_device_profile_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1792,7 +1866,7 @@ func (x *ListDeviceProfilesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListDeviceProfilesResponse.ProtoReflect.Descriptor instead.
 func (*ListDeviceProfilesResponse) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{11}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *ListDeviceProfilesResponse) GetTotalCount() uint32 {
@@ -1821,7 +1895,7 @@ type ListDeviceProfileAdrAlgorithmsResponse struct {
 
 func (x *ListDeviceProfileAdrAlgorithmsResponse) Reset() {
 	*x = ListDeviceProfileAdrAlgorithmsResponse{}
-	mi := &file_api_device_profile_proto_msgTypes[12]
+	mi := &file_api_device_profile_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1833,7 +1907,7 @@ func (x *ListDeviceProfileAdrAlgorithmsResponse) String() string {
 func (*ListDeviceProfileAdrAlgorithmsResponse) ProtoMessage() {}
 
 func (x *ListDeviceProfileAdrAlgorithmsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[12]
+	mi := &file_api_device_profile_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1846,7 +1920,7 @@ func (x *ListDeviceProfileAdrAlgorithmsResponse) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use ListDeviceProfileAdrAlgorithmsResponse.ProtoReflect.Descriptor instead.
 func (*ListDeviceProfileAdrAlgorithmsResponse) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{12}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *ListDeviceProfileAdrAlgorithmsResponse) GetTotalCount() uint32 {
@@ -1875,7 +1949,7 @@ type AdrAlgorithmListItem struct {
 
 func (x *AdrAlgorithmListItem) Reset() {
 	*x = AdrAlgorithmListItem{}
-	mi := &file_api_device_profile_proto_msgTypes[13]
+	mi := &file_api_device_profile_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1887,7 +1961,7 @@ func (x *AdrAlgorithmListItem) String() string {
 func (*AdrAlgorithmListItem) ProtoMessage() {}
 
 func (x *AdrAlgorithmListItem) ProtoReflect() protoreflect.Message {
-	mi := &file_api_device_profile_proto_msgTypes[13]
+	mi := &file_api_device_profile_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1900,7 +1974,7 @@ func (x *AdrAlgorithmListItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AdrAlgorithmListItem.ProtoReflect.Descriptor instead.
 func (*AdrAlgorithmListItem) Descriptor() ([]byte, []int) {
-	return file_api_device_profile_proto_rawDescGZIP(), []int{13}
+	return file_api_device_profile_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *AdrAlgorithmListItem) GetId() string {
@@ -1921,7 +1995,11 @@ var File_api_device_profile_proto protoreflect.FileDescriptor
 
 const file_api_device_profile_proto_rawDesc = "" +
 	"\n" +
-	"\x18api/device_profile.proto\x12\x03api\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x13common/common.proto\"\xbe\x17\n" +
+	"\x18api/device_profile.proto\x12\x03api\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x13common/common.proto\"M\n" +
+	"\rWmiCodecField\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
+	"\x04type\x18\x02 \x01(\tR\x04type\x12\x14\n" +
+	"\x05bytes\x18\x03 \x01(\rR\x05bytes\"\xfc\x17\n" +
 	"\rDeviceProfile\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\ttenant_id\x18\x02 \x01(\tR\btenantId\x12\x12\n" +
@@ -1980,7 +2058,8 @@ const file_api_device_profile_proto_rawDesc = "" +
 	"\x1frelay_overall_limit_bucket_size\x183 \x01(\rR\x1brelayOverallLimitBucketSize\x12#\n" +
 	"\rallow_roaming\x184 \x01(\bR\fallowRoaming\x12\x1b\n" +
 	"\trx1_delay\x185 \x01(\rR\brx1Delay\x12=\n" +
-	"\x10app_layer_params\x186 \x01(\v2\x13.api.AppLayerParamsR\x0eappLayerParams\x1a7\n" +
+	"\x10app_layer_params\x186 \x01(\v2\x13.api.AppLayerParamsR\x0eappLayerParams\x12<\n" +
+	"\x10wmi_codec_fields\x187 \x03(\v2\x12.api.WmiCodecFieldR\x0ewmiCodecFields\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aQ\n" +
@@ -2046,11 +2125,12 @@ const file_api_device_profile_proto_rawDesc = "" +
 	"\x06result\x18\x02 \x03(\v2\x19.api.AdrAlgorithmListItemR\x06result\":\n" +
 	"\x14AdrAlgorithmListItem\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name*1\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name*:\n" +
 	"\fCodecRuntime\x12\b\n" +
 	"\x04NONE\x10\x00\x12\x0f\n" +
 	"\vCAYENNE_LPP\x10\x01\x12\x06\n" +
-	"\x02JS\x10\x02*P\n" +
+	"\x02JS\x10\x02\x12\a\n" +
+	"\x03WMI\x10\x03*P\n" +
 	"\x0fMeasurementKind\x12\v\n" +
 	"\aUNKNOWN\x10\x00\x12\v\n" +
 	"\aCOUNTER\x10\x01\x12\f\n" +
@@ -2120,7 +2200,7 @@ func file_api_device_profile_proto_rawDescGZIP() []byte {
 }
 
 var file_api_device_profile_proto_enumTypes = make([]protoimpl.EnumInfo, 8)
-var file_api_device_profile_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_api_device_profile_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_api_device_profile_proto_goTypes = []any{
 	(CodecRuntime)(0),                              // 0: api.CodecRuntime
 	(MeasurementKind)(0),                           // 1: api.MeasurementKind
@@ -2130,73 +2210,75 @@ var file_api_device_profile_proto_goTypes = []any{
 	(Ts003Version)(0),                              // 5: api.Ts003Version
 	(Ts004Version)(0),                              // 6: api.Ts004Version
 	(Ts005Version)(0),                              // 7: api.Ts005Version
-	(*DeviceProfile)(nil),                          // 8: api.DeviceProfile
-	(*Measurement)(nil),                            // 9: api.Measurement
-	(*AppLayerParams)(nil),                         // 10: api.AppLayerParams
-	(*DeviceProfileListItem)(nil),                  // 11: api.DeviceProfileListItem
-	(*CreateDeviceProfileRequest)(nil),             // 12: api.CreateDeviceProfileRequest
-	(*CreateDeviceProfileResponse)(nil),            // 13: api.CreateDeviceProfileResponse
-	(*GetDeviceProfileRequest)(nil),                // 14: api.GetDeviceProfileRequest
-	(*GetDeviceProfileResponse)(nil),               // 15: api.GetDeviceProfileResponse
-	(*UpdateDeviceProfileRequest)(nil),             // 16: api.UpdateDeviceProfileRequest
-	(*DeleteDeviceProfileRequest)(nil),             // 17: api.DeleteDeviceProfileRequest
-	(*ListDeviceProfilesRequest)(nil),              // 18: api.ListDeviceProfilesRequest
-	(*ListDeviceProfilesResponse)(nil),             // 19: api.ListDeviceProfilesResponse
-	(*ListDeviceProfileAdrAlgorithmsResponse)(nil), // 20: api.ListDeviceProfileAdrAlgorithmsResponse
-	(*AdrAlgorithmListItem)(nil),                   // 21: api.AdrAlgorithmListItem
-	nil,                                            // 22: api.DeviceProfile.TagsEntry
-	nil,                                            // 23: api.DeviceProfile.MeasurementsEntry
-	(common.Region)(0),                             // 24: common.Region
-	(common.MacVersion)(0),                         // 25: common.MacVersion
-	(common.RegParamsRevision)(0),                  // 26: common.RegParamsRevision
-	(*timestamppb.Timestamp)(nil),                  // 27: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                          // 28: google.protobuf.Empty
+	(*WmiCodecField)(nil),                          // 8: api.WmiCodecField
+	(*DeviceProfile)(nil),                          // 9: api.DeviceProfile
+	(*Measurement)(nil),                            // 10: api.Measurement
+	(*AppLayerParams)(nil),                         // 11: api.AppLayerParams
+	(*DeviceProfileListItem)(nil),                  // 12: api.DeviceProfileListItem
+	(*CreateDeviceProfileRequest)(nil),             // 13: api.CreateDeviceProfileRequest
+	(*CreateDeviceProfileResponse)(nil),            // 14: api.CreateDeviceProfileResponse
+	(*GetDeviceProfileRequest)(nil),                // 15: api.GetDeviceProfileRequest
+	(*GetDeviceProfileResponse)(nil),               // 16: api.GetDeviceProfileResponse
+	(*UpdateDeviceProfileRequest)(nil),             // 17: api.UpdateDeviceProfileRequest
+	(*DeleteDeviceProfileRequest)(nil),             // 18: api.DeleteDeviceProfileRequest
+	(*ListDeviceProfilesRequest)(nil),              // 19: api.ListDeviceProfilesRequest
+	(*ListDeviceProfilesResponse)(nil),             // 20: api.ListDeviceProfilesResponse
+	(*ListDeviceProfileAdrAlgorithmsResponse)(nil), // 21: api.ListDeviceProfileAdrAlgorithmsResponse
+	(*AdrAlgorithmListItem)(nil),                   // 22: api.AdrAlgorithmListItem
+	nil,                                            // 23: api.DeviceProfile.TagsEntry
+	nil,                                            // 24: api.DeviceProfile.MeasurementsEntry
+	(common.Region)(0),                             // 25: common.Region
+	(common.MacVersion)(0),                         // 26: common.MacVersion
+	(common.RegParamsRevision)(0),                  // 27: common.RegParamsRevision
+	(*timestamppb.Timestamp)(nil),                  // 28: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                          // 29: google.protobuf.Empty
 }
 var file_api_device_profile_proto_depIdxs = []int32{
-	24, // 0: api.DeviceProfile.region:type_name -> common.Region
-	25, // 1: api.DeviceProfile.mac_version:type_name -> common.MacVersion
-	26, // 2: api.DeviceProfile.reg_params_revision:type_name -> common.RegParamsRevision
+	25, // 0: api.DeviceProfile.region:type_name -> common.Region
+	26, // 1: api.DeviceProfile.mac_version:type_name -> common.MacVersion
+	27, // 2: api.DeviceProfile.reg_params_revision:type_name -> common.RegParamsRevision
 	0,  // 3: api.DeviceProfile.payload_codec_runtime:type_name -> api.CodecRuntime
-	22, // 4: api.DeviceProfile.tags:type_name -> api.DeviceProfile.TagsEntry
-	23, // 5: api.DeviceProfile.measurements:type_name -> api.DeviceProfile.MeasurementsEntry
+	23, // 4: api.DeviceProfile.tags:type_name -> api.DeviceProfile.TagsEntry
+	24, // 5: api.DeviceProfile.measurements:type_name -> api.DeviceProfile.MeasurementsEntry
 	2,  // 6: api.DeviceProfile.relay_cad_periodicity:type_name -> api.CadPeriodicity
 	3,  // 7: api.DeviceProfile.relay_second_channel_ack_offset:type_name -> api.SecondChAckOffset
 	4,  // 8: api.DeviceProfile.relay_ed_activation_mode:type_name -> api.RelayModeActivation
-	10, // 9: api.DeviceProfile.app_layer_params:type_name -> api.AppLayerParams
-	1,  // 10: api.Measurement.kind:type_name -> api.MeasurementKind
-	5,  // 11: api.AppLayerParams.ts003_version:type_name -> api.Ts003Version
-	6,  // 12: api.AppLayerParams.ts004_version:type_name -> api.Ts004Version
-	7,  // 13: api.AppLayerParams.ts005_version:type_name -> api.Ts005Version
-	27, // 14: api.DeviceProfileListItem.created_at:type_name -> google.protobuf.Timestamp
-	27, // 15: api.DeviceProfileListItem.updated_at:type_name -> google.protobuf.Timestamp
-	24, // 16: api.DeviceProfileListItem.region:type_name -> common.Region
-	25, // 17: api.DeviceProfileListItem.mac_version:type_name -> common.MacVersion
-	26, // 18: api.DeviceProfileListItem.reg_params_revision:type_name -> common.RegParamsRevision
-	8,  // 19: api.CreateDeviceProfileRequest.device_profile:type_name -> api.DeviceProfile
-	8,  // 20: api.GetDeviceProfileResponse.device_profile:type_name -> api.DeviceProfile
-	27, // 21: api.GetDeviceProfileResponse.created_at:type_name -> google.protobuf.Timestamp
-	27, // 22: api.GetDeviceProfileResponse.updated_at:type_name -> google.protobuf.Timestamp
-	8,  // 23: api.UpdateDeviceProfileRequest.device_profile:type_name -> api.DeviceProfile
-	11, // 24: api.ListDeviceProfilesResponse.result:type_name -> api.DeviceProfileListItem
-	21, // 25: api.ListDeviceProfileAdrAlgorithmsResponse.result:type_name -> api.AdrAlgorithmListItem
-	9,  // 26: api.DeviceProfile.MeasurementsEntry.value:type_name -> api.Measurement
-	12, // 27: api.DeviceProfileService.Create:input_type -> api.CreateDeviceProfileRequest
-	14, // 28: api.DeviceProfileService.Get:input_type -> api.GetDeviceProfileRequest
-	16, // 29: api.DeviceProfileService.Update:input_type -> api.UpdateDeviceProfileRequest
-	17, // 30: api.DeviceProfileService.Delete:input_type -> api.DeleteDeviceProfileRequest
-	18, // 31: api.DeviceProfileService.List:input_type -> api.ListDeviceProfilesRequest
-	28, // 32: api.DeviceProfileService.ListAdrAlgorithms:input_type -> google.protobuf.Empty
-	13, // 33: api.DeviceProfileService.Create:output_type -> api.CreateDeviceProfileResponse
-	15, // 34: api.DeviceProfileService.Get:output_type -> api.GetDeviceProfileResponse
-	28, // 35: api.DeviceProfileService.Update:output_type -> google.protobuf.Empty
-	28, // 36: api.DeviceProfileService.Delete:output_type -> google.protobuf.Empty
-	19, // 37: api.DeviceProfileService.List:output_type -> api.ListDeviceProfilesResponse
-	20, // 38: api.DeviceProfileService.ListAdrAlgorithms:output_type -> api.ListDeviceProfileAdrAlgorithmsResponse
-	33, // [33:39] is the sub-list for method output_type
-	27, // [27:33] is the sub-list for method input_type
-	27, // [27:27] is the sub-list for extension type_name
-	27, // [27:27] is the sub-list for extension extendee
-	0,  // [0:27] is the sub-list for field type_name
+	11, // 9: api.DeviceProfile.app_layer_params:type_name -> api.AppLayerParams
+	8,  // 10: api.DeviceProfile.wmi_codec_fields:type_name -> api.WmiCodecField
+	1,  // 11: api.Measurement.kind:type_name -> api.MeasurementKind
+	5,  // 12: api.AppLayerParams.ts003_version:type_name -> api.Ts003Version
+	6,  // 13: api.AppLayerParams.ts004_version:type_name -> api.Ts004Version
+	7,  // 14: api.AppLayerParams.ts005_version:type_name -> api.Ts005Version
+	28, // 15: api.DeviceProfileListItem.created_at:type_name -> google.protobuf.Timestamp
+	28, // 16: api.DeviceProfileListItem.updated_at:type_name -> google.protobuf.Timestamp
+	25, // 17: api.DeviceProfileListItem.region:type_name -> common.Region
+	26, // 18: api.DeviceProfileListItem.mac_version:type_name -> common.MacVersion
+	27, // 19: api.DeviceProfileListItem.reg_params_revision:type_name -> common.RegParamsRevision
+	9,  // 20: api.CreateDeviceProfileRequest.device_profile:type_name -> api.DeviceProfile
+	9,  // 21: api.GetDeviceProfileResponse.device_profile:type_name -> api.DeviceProfile
+	28, // 22: api.GetDeviceProfileResponse.created_at:type_name -> google.protobuf.Timestamp
+	28, // 23: api.GetDeviceProfileResponse.updated_at:type_name -> google.protobuf.Timestamp
+	9,  // 24: api.UpdateDeviceProfileRequest.device_profile:type_name -> api.DeviceProfile
+	12, // 25: api.ListDeviceProfilesResponse.result:type_name -> api.DeviceProfileListItem
+	22, // 26: api.ListDeviceProfileAdrAlgorithmsResponse.result:type_name -> api.AdrAlgorithmListItem
+	10, // 27: api.DeviceProfile.MeasurementsEntry.value:type_name -> api.Measurement
+	13, // 28: api.DeviceProfileService.Create:input_type -> api.CreateDeviceProfileRequest
+	15, // 29: api.DeviceProfileService.Get:input_type -> api.GetDeviceProfileRequest
+	17, // 30: api.DeviceProfileService.Update:input_type -> api.UpdateDeviceProfileRequest
+	18, // 31: api.DeviceProfileService.Delete:input_type -> api.DeleteDeviceProfileRequest
+	19, // 32: api.DeviceProfileService.List:input_type -> api.ListDeviceProfilesRequest
+	29, // 33: api.DeviceProfileService.ListAdrAlgorithms:input_type -> google.protobuf.Empty
+	14, // 34: api.DeviceProfileService.Create:output_type -> api.CreateDeviceProfileResponse
+	16, // 35: api.DeviceProfileService.Get:output_type -> api.GetDeviceProfileResponse
+	29, // 36: api.DeviceProfileService.Update:output_type -> google.protobuf.Empty
+	29, // 37: api.DeviceProfileService.Delete:output_type -> google.protobuf.Empty
+	20, // 38: api.DeviceProfileService.List:output_type -> api.ListDeviceProfilesResponse
+	21, // 39: api.DeviceProfileService.ListAdrAlgorithms:output_type -> api.ListDeviceProfileAdrAlgorithmsResponse
+	34, // [34:40] is the sub-list for method output_type
+	28, // [28:34] is the sub-list for method input_type
+	28, // [28:28] is the sub-list for extension type_name
+	28, // [28:28] is the sub-list for extension extendee
+	0,  // [0:28] is the sub-list for field type_name
 }
 
 func init() { file_api_device_profile_proto_init() }
@@ -2210,7 +2292,7 @@ func file_api_device_profile_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_device_profile_proto_rawDesc), len(file_api_device_profile_proto_rawDesc)),
 			NumEnums:      8,
-			NumMessages:   16,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
